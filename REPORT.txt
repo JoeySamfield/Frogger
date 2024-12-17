@@ -1,0 +1,89 @@
+1. Summary of Functionality and Implementation
+
+- Keyboard Interactivity was achieved through player movement (WASD) and 
+a shortcut (Q) for the game's Pause menu. The movement keys initiate a 
+hop by the player in the specified direction. Q merely brings up the pause menu.
+
+- Multiple GUI Systems were achieved through the Main Menu screen, Pause menu, and 
+Victory Screen.
+The Main Menu has two buttons. The first merely initiates the game. The second, 
+when the mouse button is held over it, displays the most recent completion Times.
+The Pause Menu also has two buttons. BACK returns to the current game, and MAIN 
+returns the player to the Main Menu. The Victory Screen displays when the player 
+reaches the finish line; it displays their time and has a button that returns 
+them to the main menu.
+
+- Class Objects with Animation Hierarchies.
+My main example of animation hierarchy is that of the Water and Log objects. 
+When the player hops up and down, all objects on screen are moved vertically 
+to simulate a centered camera -- done with hopUp()/hopDown(). In this case, 
+the Water object takes Log objects as parameters. The Water is given translated 
+coordinates which are altered by hops. Because the Logs are drawn and translated 
+within the context of the Water's translation/display function, their vertical 
+position is solely determined by the Water's vertical position. The Logs, from 
+their anchored y-coordinates, are translated horizontally. This hierarchy is 
+reflected in the fact that Logs don't need to have a hopUp() method called to 
+be moved vertically -- that is done by the Water.
+
+- Data Input/Output
+I achieved this by storing and displaying level-completion times into a JSONArray. 
+When a player presses the Victory Screen button to go back to the main menu and 
+submit their time, their completion time is appended to to this JSONArray in 
+the format of "{ 'score': 12.7043 }.
+Loading of this data was achieved in the Main Menu. The Times shown when the player presses the "TIMES" button on the main menu are loaded from the same 
+JSONArray. The four most recent value entries into the Array are displayed.
+
+2. Classes
+
+- First, almost all of the classes for my world objects have a hopUp and hopDown 
+function that increments their vertical position.
+
+- CARS: Cars are ellipses drawn onto the world that Lerp across the screen. 
+Their advance() function carries out this lerp. The drawPlay() function detects 
+if a Car has collided with the player, so Cars simply act as basic obstacles 
+for the player to avoid.
+
+- Button: Buttons are self-explanatory. The Button class simply has methods 
+that draw the Button and determine its text. Button click detection is done 
+in my Menu functions, although the Button's x and y parameters allow me to 
+easily check the button's coordinates relative to the mouse.
+
+- Land: Land is simply a colored block that acts as background and visually 
+separates areas of the level. It moves vertically relative to the player like 
+the other world objects but only serves an aesthetic purpose.
+
+- Log: Logs act as moving platforms for the player, allowing them to safely 
+traverse Water. Logs are similar to Cars in that they Lerp across the screen at 
+a designated height. Unlike Cars, Logs are parameters to an object that their 
+coordinates are linked to. Their drawAt() function accomplishes this inside 
+the Water class. Player-Log collision is accomplished in my drawPlay() function 
+using the respective objects' coordinates. Upon colliding, the Log's per-frame 
+movement is calculated using its speed and left (direction) parameters (as well 
+as its travel distance, which isn't returned as an object parameter) and applied 
+to make it usable as a moving platform.
+
+- Player: The Player object indicates the Player's position with a green 
+ellipse. Its hopRight() and hopLeft() functions alter the player's horizontal 
+movements since the camera is only designed to be vertically centered. The 
+Player objects position and size parameters aid in collision detections, and its 
+total_up parameter, which is altered by vertical hops, informs my drawPlay() 
+function how many steps to take in order to reset the objects in the level.
+
+- Water: the Water class is just like Land, but it draws Logs relative to its 
+own position to accomplish hierarchy. The Water's position parameters can 
+be used by my drawPlay() loop to determine if the player has drowned (unless 
+they land on a log). Its advance() function initiates the horizontal 
+movement of its Logs.
+
+3. Unexpected Challenges: I'm kind of just making this phrase up, but I 
+struggled with this "Application-style" programming. Managing multiple screens 
+forced me to be more cognizant of what data should persist through scene changes. 
+For example, getting the timer for level-completion time was surprisingly 
+challenging. It was easy to know that my main menu screen resets the timer, 
+my play screen starts it, etc, but I had to consider how screens could be visited 
+in different orders, save a time variable at one screen and then recall it from 
+the next, etc. In general, I just found myself doing more chronological thinking. 
+This extra layer caused me to overlook optimal solutions to code encapsulation
+as well.
+
+4. I am the only group member.
